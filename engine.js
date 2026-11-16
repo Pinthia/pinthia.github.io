@@ -407,7 +407,8 @@ async function pickFolder() {
       }
       if (!plan.length && !selected.length) throw new UserError('Nothing selected.');
     }
-    const progress = { done: 0, files: 0, failed: 0, estimate: Math.min(LIMIT, Math.max(0, selected.length + plan.reduce((n, p) => n + (p.section ? p.section.pinCount : (p.board.unsorted ?? p.board.pinCount)), 0) - exclude.size)), finished: false, error: null };
+    const total = Math.max(0, selected.length + plan.reduce((n, p) => n + (p.section ? p.section.pinCount : (p.board.unsorted ?? p.board.pinCount)), 0) - exclude.size);
+    const progress = { done: 0, files: 0, failed: 0, estimate: Math.min(LIMIT, total), capped: total > LIMIT ? total : 0, finished: false, error: null };
     class DirSink extends Zip {
       async add(name, data) { await saveToDir(dir, name, data); }
       finish() { return null; }
