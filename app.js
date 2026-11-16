@@ -30,15 +30,17 @@ $('burger').onclick = () => setMenu(!document.querySelector('header').classList.
 $('navAbout').onclick = () => { showPanel('about'); setMenu(false); };
 $('navExt').onclick = () => { showPanel('ext'); setMenu(false); };
 $('navDl').onclick = () => { showPanel(null); setMenu(false); };
-if (engine.kind === 'extension') $('navExt').hidden = true; // already installed
+// already installed: the extension itself, or the website after the Pinthia extension marked this page
+const hideExt = () => { $('navExt').hidden = true; if (!$('extPanel').hidden) showPanel(''); };
+if (engine.kind === 'extension' || document.documentElement.hasAttribute('data-pinthia-extension')) hideExt();
+window.addEventListener('pinthia-extension', hideExt);
 
 /* ---------- extension install: show the steps for the browser you are in ---------- */
 const BROWSERS = (() => {
   const copy = (t) => `<code>${t}</code> <button type="button" class="copy" data-copy="${t}">Copy</button>`;
   return [
     { name: 'Safari', steps: ['Unzip the download.', 'In Safari open Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Advanced and tick <b>Show features for web developers</b>.', 'In the menu bar choose <b>Develop</b> <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> <b>Developer Settings…</b> and tick <b>Allow unsigned extensions</b>.', 'Click <b>Add Temporary Extension…</b> and pick the <b>extension</b> folder from the download.', 'Open Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Extensions and tick <b>Pinthia</b>. Allow it on pinterest.com.', 'Safari forgets the extension when you quit it. To bring it back, repeat the last three steps.'] },
-    { name: 'Chrome, Brave', steps: ['Coming soon.'] },
-    { name: 'Firefox', steps: ['Coming soon.'] },
+    { name: 'Chrome, Brave, Firefox', steps: ['Coming soon.'] },
   ];
 })();
 const USING = ['Open a board on Pinterest and click the <b>Pinthia</b> button in your toolbar. It opens with that board loaded.', 'Tick what you want and press <b>Download</b>.'];
