@@ -36,7 +36,7 @@ if (engine.kind === 'extension') $('navExt').hidden = true; // already installed
 const BROWSERS = (() => {
   const copy = (t) => `<code>${t}</code> <button type="button" class="copy" data-copy="${t}">Copy</button>`;
   return [
-    { name: 'Safari', steps: ['Unzip the download.', 'Double-click <b>Install in Safari</b> (needs Xcode, which is free).', 'In Safari open Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Extensions and tick <b>Pinthia</b>.'] },
+    { name: 'Safari', steps: ['Unzip the download.', 'Double-click <b>Install in Safari</b> (needs Xcode, which is free).', 'If macOS blocks it, open System Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Privacy &amp; Security, scroll down and click <b>Open Anyway</b>.', 'In Safari open Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Extensions and tick <b>Pinthia</b>.'] },
     { name: 'Chrome, Brave', steps: ['Unzip the download.', `Open ${copy('chrome://extensions')} or ${copy('brave://extensions')} and switch on <b>Developer mode</b>.`, 'Click <b>Load unpacked</b> and pick the <b>extension</b> folder.'] },
     { name: 'Firefox', steps: ['Unzip the download.', `Open ${copy('about:debugging')} and click <b>This Firefox</b>.`, 'Click <b>Load Temporary Add-on</b> and pick <b>extension/manifest.json</b>.'] },
   ];
