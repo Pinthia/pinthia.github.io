@@ -36,9 +36,9 @@ if (engine.kind === 'extension') $('navExt').hidden = true; // already installed
 const BROWSERS = (() => {
   const copy = (t) => `<code>${t}</code> <button type="button" class="copy" data-copy="${t}">Copy</button>`;
   return [
-    { name: 'Safari', steps: ['Unzip the download.', 'Double-click <b>Install in Safari</b> (needs Xcode, which is free).', 'If macOS blocks it, open System Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Privacy &amp; Security, scroll down and click <b>Open Anyway</b>.', 'In Safari open Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Advanced and tick <b>Show features for web developers</b>. Then in the menu bar choose <b>Develop</b> <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> <b>Allow Unsigned Extensions</b>. Safari turns this off when you quit it.', 'In Safari open Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Extensions and tick <b>Pinthia</b>.'] },
-    { name: 'Chrome, Brave', steps: ['Unzip the download.', `Open ${copy('chrome://extensions')} or ${copy('brave://extensions')} and switch on <b>Developer mode</b>.`, 'Click <b>Load unpacked</b> and pick the <b>extension</b> folder.'] },
-    { name: 'Firefox', steps: ['Unzip the download.', `Open ${copy('about:debugging')} and click <b>This Firefox</b>.`, 'Click <b>Load Temporary Add-on</b> and pick <b>extension/manifest.json</b>.'] },
+    { name: 'Safari', steps: ['Unzip the download.', 'In Safari open Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Advanced and tick <b>Show features for web developers</b>.', 'In the menu bar choose <b>Develop</b> <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> <b>Developer Settings…</b> and tick <b>Allow unsigned extensions</b>.', 'Click <b>Add Temporary Extension…</b> and pick the <b>extension</b> folder from the download.', 'Open Settings <svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg> Extensions and tick <b>Pinthia</b>. Allow it on pinterest.com.', 'Safari forgets the extension when you quit it. To bring it back, repeat the last three steps.'] },
+    { name: 'Chrome, Brave', steps: ['Coming soon.'] },
+    { name: 'Firefox', steps: ['Coming soon.'] },
   ];
 })();
 const USING = ['Open a board on Pinterest and click the <b>Pinthia</b> button in your toolbar. It opens with that board loaded.', 'Tick what you want and press <b>Download</b>.'];
