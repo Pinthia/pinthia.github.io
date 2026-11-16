@@ -7,6 +7,7 @@
   const fetch = (u, o) => globalThis.fetch(PROXY + '?u=' + encodeURIComponent(String(u)), o); // every Pinterest request goes through the proxy
   const BASE = 'https://www.pinterest.com';
   const CONCURRENCY = 6;
+  const LIMIT = 100; // most pins one download takes; keeps the free proxy fast for everyone
   const RESERVED = new Set(['pin', 'search', 'ideas', 'today', 'settings', 'business', 'login', 'signup', 'explore', 'categories', 'topics', 'news_hub', 'resource', 'password', 'about']);
 
   class UserError extends Error {}
@@ -406,7 +407,7 @@ async function pickFolder() {
       }
       if (!plan.length && !selected.length) throw new UserError('Nothing selected.');
     }
-    const progress = { done: 0, files: 0, failed: 0, estimate: Math.max(0, selected.length + plan.reduce((n, p) => n + (p.section ? p.section.pinCount : (p.board.unsorted ?? p.board.pinCount)), 0) - exclude.size), finished: false, error: null };
+    const progress = { done: 0, files: 0, failed: 0, estimate: Math.min(LIMIT, Math.max(0, selected.length + plan.reduce((n, p) => n + (p.section ? p.section.pinCount : (p.board.unsorted ?? p.board.pinCount)), 0) - exclude.size)), finished: false, error: null };
     class DirSink extends Zip {
       async add(name, data) { await saveToDir(dir, name, data); }
       finish() { return null; }
@@ -415,6 +416,7 @@ async function pickFolder() {
     let flatIdx = 0;
     ctrl = new AbortController();
 
+    let taken = 0;
     async function* items() {
       for (const step of plan) {
         let index = 0;
@@ -423,6 +425,7 @@ async function pickFolder() {
           if (exclude.has(`${step.section ? 's:' + step.section.id : 'r:' + step.board.id}|${pin.id}`)) { progress.done++; continue; }
           const item = toItem(pin);
           if (!types.has(item.kind)) { progress.done++; continue; }
+          if (taken++ >= LIMIT) return;
           yield { folder: step.folder, index: ++index, item };
         }
       }
@@ -434,6 +437,7 @@ async function pickFolder() {
           if (!hit) { progress.failed++; progress.done++; failures.push(`${key}\t\tselection expired, reload the board and select again`); continue; }
           if (!types.has(hit.item.kind)) { progress.done++; continue; }
           const index = (counters.get(hit.folder) || 0) + 1; counters.set(hit.folder, index);
+          if (taken++ >= LIMIT) return;
           yield { folder: hit.folder, index, item: hit.item };
         }
       }
