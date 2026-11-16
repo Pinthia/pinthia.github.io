@@ -367,7 +367,7 @@ async function startDownload(fields) {
   try {
     const r = await engine.download(fields, onProgress);
     $('track').classList.remove('indet'); $('track').firstElementChild.style.width = '100%'; $('nums').innerHTML = `Done ${ICON.done}${r?.saved ? ' <em>Saved in Downloads</em>' : ''}`;
-    if (r?.capped) setMsg(`Sorry, website downloads are limited to ${fmt(Math.min(100, r.capped))} pins because hosting this costs me money. This board has ${fmt(r.capped)} pins, so you got the first 100. For the whole board, use the free browser extension (Add extension tab).`);
+    if (r?.capped) setMsg('Sorry, downloads are limited to 100 pins. It costs me money.');
     setTimeout(finish, 2500);
   } catch (e) {
     setMsg(e.name === 'Cancel' ? 'Stopped.' : e.message);
