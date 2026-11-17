@@ -22,14 +22,14 @@ $('back').innerHTML = ICON.left + 'All boards';
 /* ---------- nav ---------- */
 function showPanel(which) {
   document.body.classList.toggle('page-other', !!which); // Extension and About are their own pages
-  $('about').classList.toggle('on', which === 'about'); $('extPanel').hidden = which !== 'ext'; $('appPanel').hidden = which !== 'app';
+  $('about').classList.toggle('on', which === 'about'); $('idea').classList.toggle('on', which === 'idea'); $('navIdea').classList.toggle('on', which === 'idea'); $('extPanel').hidden = which !== 'ext'; $('appPanel').hidden = which !== 'app';
   $('navApp').classList.toggle('on', which === 'app');
   $('navAbout').classList.toggle('on', which === 'about'); $('navExt').classList.toggle('on', which === 'ext'); $('navDl').classList.toggle('on', !which);
 }
 const setMenu = (open) => { document.querySelector('header').classList.toggle('open', open); $('burger').setAttribute('aria-expanded', open); };
 if (matchMedia('(hover: hover) and (pointer: fine)').matches) $('url').focus();
 $('burger').onclick = () => setMenu(!document.querySelector('header').classList.contains('open'));
-$('navIdea').onclick = () => { location.href = 'mailto:jureeruj@outlook.com?subject=Pinthia%20idea'; setMenu(false); };
+$('navIdea').onclick = () => { showPanel('idea'); setMenu(false); };
 $('navAbout').onclick = () => { showPanel('about'); setMenu(false); };
 $('navExt').onclick = () => { showPanel('ext'); setMenu(false); };
 $('navApp').onclick = () => { showPanel('app'); setMenu(false); };
