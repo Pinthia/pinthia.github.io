@@ -23,8 +23,7 @@ $('back').innerHTML = ICON.left + 'All boards';
 function showPanel(which) {
   document.body.classList.toggle('page-other', !!which); // Extension and About are their own pages
   $('about').classList.toggle('on', which === 'about'); $('extPanel').hidden = which !== 'ext'; $('appPanel').hidden = which !== 'app';
-  document.body.classList.toggle('show-info', which === 'info'); document.querySelector('#info details').open = which === 'info';
-  $('navInfo').classList.toggle('on', which === 'info'); $('navApp').classList.toggle('on', which === 'app');
+  $('navApp').classList.toggle('on', which === 'app');
   $('navAbout').classList.toggle('on', which === 'about'); $('navExt').classList.toggle('on', which === 'ext'); $('navDl').classList.toggle('on', !which);
 }
 const setMenu = (open) => { document.querySelector('header').classList.toggle('open', open); $('burger').setAttribute('aria-expanded', open); };
@@ -32,7 +31,6 @@ if (matchMedia('(hover: hover) and (pointer: fine)').matches) $('url').focus();
 $('burger').onclick = () => setMenu(!document.querySelector('header').classList.contains('open'));
 $('navAbout').onclick = () => { showPanel('about'); setMenu(false); };
 $('navExt').onclick = () => { showPanel('ext'); setMenu(false); };
-$('navInfo').onclick = () => { showPanel('info'); setMenu(false); };
 $('navApp').onclick = () => { showPanel('app'); setMenu(false); };
 $('navDl').onclick = () => { showPanel(null); setMenu(false); };
 // already installed: the extension itself, or the website after the Pinthia extension marked this page
