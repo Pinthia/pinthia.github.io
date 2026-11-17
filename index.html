@@ -11,15 +11,41 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pinthia — Board Downloader</title>
-<meta name="description" content="Free tool: paste a Pinterest board link and download it as a zip that keeps your sections as folders.">
+<title>Pinthia: Free Pinterest Board Downloader (keeps sections as folders)</title>
+<meta name="description" content="Download a Pinterest board as one zip. Paste a public board, section or profile link and get every pin in original quality, with your sections kept as folders. Free, no sign-in.">
+<meta name="keywords" content="pinterest board downloader, download pinterest board, pinterest to zip, save pinterest pins, pinterest video downloader, pinterest section downloader">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="author" content="Pinthia">
+<meta name="google-site-verification" content="2IyTPvoSMETGRR9DOx1khxF3TLlKmaEvLc2CwypOt4M">
+<link rel="canonical" href="https://pinthia.github.io/">
+<link rel="alternate" type="text/plain" href="https://pinthia.github.io/llms.txt" title="LLM-readable summary">
 <link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Pinthia: Pinterest board downloader">
+<meta property="og:site_name" content="Pinthia">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Pinthia: Free Pinterest Board Downloader">
 <meta property="og:description" content="Paste a Pinterest board link and download every pin as one zip, with your sections kept as folders.">
 <meta property="og:url" content="https://pinthia.github.io/">
 <meta property="og:image" content="https://pinthia.github.io/og-image.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:image:alt" content="Pinthia, the Pinterest board downloader">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Pinthia: Free Pinterest Board Downloader">
+<meta name="twitter:description" content="Paste a Pinterest board link and download every pin as one zip, with your sections kept as folders.">
+<meta name="twitter:image" content="https://pinthia.github.io/og-image.png">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebSite","@id":"https://pinthia.github.io/#site","url":"https://pinthia.github.io/","name":"Pinthia","description":"Free Pinterest board downloader that keeps sections as folders.","inLanguage":"en"},
+{"@type":"WebApplication","@id":"https://pinthia.github.io/#app","name":"Pinthia","url":"https://pinthia.github.io/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser; Safari, Chrome, Firefox extension)","browserRequirements":"Requires JavaScript","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Paste a public Pinterest board, section or profile link and download every pin as one zip, with sections kept as folders.","featureList":["Download a whole Pinterest board as a zip","Keeps board sections as folders","Original-size images, videos, GIFs and idea pins","Works with boards, sections, profiles and pin.it links","No account or sign-in"]},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How do I download a Pinterest board?","acceptedAnswer":{"@type":"Answer","text":"Copy the link of a public Pinterest board, paste it into Pinthia, choose the sections or pins you want and press Download. You get one zip."}},
+{"@type":"Question","name":"Does it keep my board sections?","acceptedAnswer":{"@type":"Answer","text":"Yes. Each section becomes a folder inside the zip, and pins that sit on the board without a section go into a Main folder."}},
+{"@type":"Question","name":"Can I download secret boards?","acceptedAnswer":{"@type":"Answer","text":"No. Pinthia only works on public boards."}},
+{"@type":"Question","name":"Is Pinthia free?","acceptedAnswer":{"@type":"Answer","text":"Yes. It is free, needs no account, and is made by one person."}},
+{"@type":"Question","name":"What can it save?","acceptedAnswer":{"@type":"Answer","text":"Original-size images, videos, GIFs, carousel slides and idea-pin pages, from boards, sections, whole profiles and pin.it links."}}
+]}]}
+</script>
 <link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png?v=2" type="image/png" sizes="32x32">
 <link rel="shortcut icon" href="favicon.ico?v=2">
@@ -60,7 +86,12 @@
   .about p { margin: 0; font-weight: 700; font-size: var(--fs-m); line-height: 1.2; letter-spacing: -.03em; max-width: 36em; }
   .about.on { display: block; }
 
-  body.page-other .hero, body.page-other #cabinet, body.page-other #front { display: none !important; }
+  body.page-other .hero, body.page-other #cabinet, body.page-other #front, body.page-other #info, body.loaded #info { display: none !important; }
+  #info { margin-top: 120px; padding-bottom: 40px; }
+  #info h2 { margin: 0 0 14px; font-weight: 700; font-size: var(--fs-m); letter-spacing: -.04em; line-height: 1.1; }
+  #info h3 { margin: 22px 0 4px; font-weight: 700; font-size: var(--fs-s); letter-spacing: -.02em; }
+  #info p, #info li { margin: 0; color: var(--mid); font-weight: 500; font-size: var(--fs-s); line-height: 1.4; max-width: 44em; }
+  #info ol { margin: 0; padding-left: 20px; }
   .ext { margin-top: 104px; }
   .browser { margin-top: 34px; }
   .browser h3 { margin: 0 0 10px; font-weight: 700; font-size: var(--fs-m); letter-spacing: -.04em; line-height: 1.1; }
@@ -406,6 +437,21 @@
     </div>
     <div id="tree"></div>
   </section>
+  <section class="g" id="info" aria-label="About Pinthia">
+    <div class="c1"></div>
+    <div class="c2">
+      <h2>Free Pinterest board downloader</h2>
+      <p>Pinthia downloads a public Pinterest board, a single section or a whole profile as one zip. Your sections stay as folders, and pins are saved as original-size images, videos and GIFs. No account, no sign-in.</p>
+      <h3>How to download a Pinterest board</h3>
+      <ol><li>Copy the link of a public Pinterest board.</li><li>Paste it above and press the arrow.</li><li>Pick the sections or pins you want and press Download.</li></ol>
+      <h3>Does it keep my sections?</h3>
+      <p>Yes. Each section becomes a folder in the zip. Pins on the board without a section go into a folder called Main.</p>
+      <h3>Can I download secret boards?</h3>
+      <p>No, only public boards. Pinthia is not affiliated with Pinterest.</p>
+      <h3>What links work?</h3>
+      <p>Boards, sections, profiles (every board) and pin.it short links.</p>
+    </div>
+  </section>
 </main>
 
 <div class="scrim" id="scrim" aria-hidden="true"></div>
@@ -427,8 +473,8 @@
   </div>
 </div>
 
-<script src="engine.js?v=1794910685"></script>
-<script src="app.js?v=1794910685"></script>
+<script src="engine.js?v=1794911437"></script>
+<script src="app.js?v=1794911437"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b272ce9928174f259fd5ad225997c514"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

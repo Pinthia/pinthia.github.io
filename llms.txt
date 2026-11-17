@@ -1,0 +1,33 @@
+# Pinthia
+
+> Pinthia is a free Pinterest board downloader. Paste a link to a public Pinterest board, section or profile and get one zip with every pin, with the board's sections kept as folders.
+
+Pinthia works on public boards only. It needs no account and no sign-in, and it is free. It is made by one person.
+
+## What it does
+
+- Downloads a whole Pinterest board, a single section, or every board on a profile, plus pin.it short links.
+- Keeps the board's sections as folders inside the zip.
+- Saves original-size images, videos, GIFs, carousel slides and idea-pin pages.
+- Lets you pick which sections or pins to include before downloading.
+
+## How to use it
+
+1. Copy the link of a public Pinterest board.
+2. Paste it at https://pinthia.github.io/
+3. Choose what to keep, then press Download.
+
+## Forms
+
+- Website: https://pinthia.github.io/ (works on desktop and phone, installable as an app)
+- Browser extension for Safari, Chrome and Firefox: download from the website ("Add extension"). It builds the zip on your own computer.
+
+## Limits
+
+- Public boards only. Secret boards cannot be downloaded.
+- Pinthia is not affiliated with Pinterest.
+
+## Links
+
+- [Pinthia website](https://pinthia.github.io/)
+- [Support the project](https://ko-fi.com/jureeruj)
