@@ -87,7 +87,11 @@
   .about.on { display: block; }
 
   body.page-other .hero, body.page-other #cabinet, body.page-other #front, body.page-other #info, body.loaded #info { display: none !important; }
-  #info { margin-top: 96px; padding-bottom: 24px; }
+  #info { margin-top: 56px; padding-bottom: 24px; }
+  #info summary { cursor: pointer; list-style: none; color: var(--gray); font-weight: 700; font-size: 13px; letter-spacing: -.01em; width: max-content; }
+  #info summary::-webkit-details-marker { display: none; }
+  #info summary:hover, #info[open] summary { color: var(--mid); }
+  #info .body { margin-top: 10px; }
   #info h2 { margin: 0 0 6px; font-weight: 700; font-size: 13px; letter-spacing: -.01em; line-height: 1.3; color: var(--gray); }
   #info h3 { margin: 12px 0 2px; font-weight: 700; font-size: 13px; letter-spacing: -.01em; color: var(--gray); }
   #info p, #info li { margin: 0; color: var(--gray); font-weight: 500; font-size: 13px; line-height: 1.45; max-width: 44em; }
@@ -439,7 +443,9 @@
   </section>
   <section class="g" id="info" aria-label="About Pinthia">
     <div class="c1"></div>
-    <div class="c2">
+    <details class="c2">
+      <summary>About Pinthia</summary>
+      <div class="body">
       <h2>Free Pinterest board downloader</h2>
       <p>Pinthia downloads a public Pinterest board, a single section or a whole profile as one zip. Your sections stay as folders, and pins are saved as original-size images, videos and GIFs. No account, no sign-in.</p>
       <h3>How to download a Pinterest board</h3>
@@ -450,7 +456,8 @@
       <p>No, only public boards. Pinthia is not affiliated with Pinterest.</p>
       <h3>What links work?</h3>
       <p>Boards, sections, profiles (every board) and pin.it short links.</p>
-    </div>
+      </div>
+    </details>
   </section>
 </main>
 
@@ -473,8 +480,8 @@
   </div>
 </div>
 
-<script src="engine.js?v=1794912064"></script>
-<script src="app.js?v=1794912064"></script>
+<script src="engine.js?v=1794912083"></script>
+<script src="app.js?v=1794912083"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b272ce9928174f259fd5ad225997c514"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
