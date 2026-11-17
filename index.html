@@ -2,17 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Pinthia">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
 <title>Pinthia — Board Downloader</title>
 <meta name="description" content="Free tool: paste a Pinterest board link and download it as a zip that keeps your sections as folders.">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Pinthia: Pinterest board downloader">
 <meta property="og:description" content="Paste a Pinterest board link and download every pin as one zip, with your sections kept as folders.">
 <meta property="og:url" content="https://jureeruj.github.io/pinthia/">
 <meta property="og:image" content="https://jureeruj.github.io/pinthia/og-image.png">
 <meta name="twitter:card" content="summary">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Cpath fill='%23fff' d='M10 7h7.2c3.6 0 5.8 2 5.8 5.2s-2.2 5.3-5.8 5.3h-3.6V25H10zm3.6 3v4.5h3.2c1.7 0 2.6-.9 2.6-2.3s-.9-2.2-2.6-2.2z'/%3E%3C/svg%3E">
+<link rel="icon" href="favicon.svg?v=2" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png?v=2" type="image/png" sizes="32x32">
+<link rel="shortcut icon" href="favicon.ico?v=2">
 <style>
   :root { --bg: #fff; --ink: #000; --gray: #b0b0b0; --mid: #6b6b6b; --soft: #f2f2f2; --hair: 1px solid #000; --err: #d00; --c1: 300px; --gap: 40px; --pad: 24px; --cols: 5;
     /* type scale: s = small UI, m = bar and buttons, l = names, d = nav, in = input, h = headlines */
@@ -67,6 +77,7 @@
   .hero { padding: 104px 0 0; }
   body.loaded .hero { padding-top: 0; }
   body.loaded form { display: none; }
+  h1, .crumbs h2, .about p { text-wrap: balance; }
   h1 { font-weight: 700; font-size: var(--fs-h); line-height: 1.02; letter-spacing: -.045em; margin: 0 0 24px; }
   body.loaded h1, body.loaded .hero .c1 .cap.big { display: none; }
   form { display: flex; align-items: center; gap: 16px; border-bottom: var(--hair); padding-bottom: 8px; }
@@ -149,6 +160,7 @@
   .front .g { align-items: center; row-gap: 18px; }
   .sum { font-weight: 700; font-size: var(--fs-m); letter-spacing: -.03em; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
   .sum em { font-style: normal; color: var(--gray); }
+  .sum.short .selw { display: none; } .sum.shorter em { display: none; }
   .actions { display: flex; align-items: center; gap: 26px; }
   .actions .sp { flex: 1; }
   .dlmsg { color: var(--err); font-weight: 700; font-size: var(--fs-s); letter-spacing: -.02em; text-align: right; min-width: 0; }
@@ -203,24 +215,27 @@
     .nm { font-size: 19px; }
     .row.master { padding: 20px 0; }
     .rh { justify-content: flex-start; min-height: 0; margin: 0; }
-    .ogrid { row-gap: 18px; } .chips { gap: 6px 18px; }
+    .ogrid { row-gap: 2px; } .chips { gap: 0 18px; }
     /* bottom bar: summary + Options on one line, links and the button on the next */
     .front-in { padding-top: 16px; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
     .front.optsopen .opts-wrap { padding: 4px 0 24px; margin-bottom: 16px; }
     .front.optsopen { max-height: 80vh; overflow-y: auto; }
-    .chips { gap: 14px 24px; } .o { padding: 6px 0; font-size: 17px; }
+    .chips { gap: 0 24px; } .o { padding: 6px 0; font-size: 17px; }
     .opt-btn { padding: 6px 0 6px 8px; }
     .front .btn { padding: 16px 20px; }
-    .ogrid > .c2 { margin-top: 18px; }
-    .front .g { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
-    .front .c1, .front .actions { display: contents; }
-    .sum { order: 1; flex: 1 1 calc(100% - 100px); font-size: var(--fs-s); white-space: normal; }
-    .opt-btn { order: 2; font-size: var(--fs-s); }
-    .fl { order: 3; font-size: var(--fs-s); }
+    .ogrid > .c2 { margin-top: 0; }
+    .front-in > .g { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 0 16px; }
+    .front-in > .g > .c1, .front-in > .g > .actions { display: contents; }
+    /* Options on the left; Select/Deselect all and the count stacked on the right */
+    .opt-btn { grid-column: 1; grid-row: 1 / span 2; font-size: var(--fs-s); padding: 0; }
+    .fl { grid-column: 2; grid-row: 1; justify-self: end; font-size: var(--fs-s); }
+    .sum { grid-column: 2; grid-row: 2; justify-self: end; text-align: right; font-size: var(--fs-s); white-space: normal; margin: 4px 0 16px; }
+    .front-in > .g { row-gap: 0; } .opt-btn { align-self: start; }
+    .front .ogrid { row-gap: 4px; }
     .actions .sp { display: none; }
-    .dlmsg { order: 4; flex: 1 1 100%; text-align: left; }
-    .front .btn { order: 5; flex: 1 1 100%; justify-content: center; }
-    .prog { order: 6; flex: 1 1 100%; }
+    .dlmsg { grid-column: 1 / -1; text-align: left; }
+    .front .btn { grid-column: 1 / -1; justify-content: center; }
+    .prog { grid-column: 1 / -1; }
   }
   @media (max-width: 560px) {
     :root { --cols: 3; --fcw: 24px; --fch: 19px; }
@@ -234,6 +249,105 @@
     .pin.cover .chk { display: none; }
   }
   @media (max-width: 340px) { :root { --cols: 2; } }
+
+  /* ---------- native feel: touch, safe areas, sheets, press feedback ---------- */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-padding-top: 80px; }
+  body { min-height: 100vh; min-height: 100dvh; -webkit-tap-highlight-color: transparent; }
+  button, a, input, .pin { touch-action: manipulation; }
+  .wrap { padding-left: max(var(--pad), env(safe-area-inset-left)); padding-right: max(var(--pad), env(safe-area-inset-right)); }
+  main { padding-bottom: calc(240px + env(safe-area-inset-bottom, 0px)); }
+  .pin img { pointer-events: none; -webkit-user-drag: none; -webkit-touch-callout: none; }
+  .pin, .btn, nav button, .burger, .logo, .opt-btn, .o, .fl, .fcb, .tools button, .rh > button { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+  .scrim { position: fixed; inset: 0; z-index: 9; background: rgba(0,0,0,.32); opacity: 0; pointer-events: none; transition: opacity .25s; }
+  .front.on { animation: sheetin .32s cubic-bezier(.2,.8,.2,1); }
+  @keyframes sheetin { from { transform: translateY(100%); } }
+  .front { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+  .front-in { padding-left: var(--pad); padding-right: var(--pad); }
+
+  /* touch devices: real hit targets, no sticky hover, press feedback */
+  @media (pointer: coarse) {
+    nav button, .logo, .tools button, .fl, .opt-btn, .o, .more button, .rh > button { min-height: 44px; display: inline-flex; align-items: center; }
+    .rh { min-height: 44px; }
+    .tools { gap: 4px 26px; margin-top: 8px; }
+    .btn { min-height: 52px; justify-content: center; }
+    .btn.stop { min-height: 44px; }
+    form button { min-height: 48px; min-width: 48px; }
+    form input { padding: 14px 0; }
+    .fcb { position: relative; } .fcb::after { content: ""; position: absolute; inset: -8px; }
+    .btn, .pin, .fcb, nav button, .logo, .tools button, .fl, .opt-btn, .o, .rh > button, .more button, .burger { transition: transform .12s, opacity .12s, background-color .12s, color .15s; }
+    .btn:active, .pin:active { transform: scale(.97); }
+    .fcb:active { transform: scale(.9); }
+    .logo:active, nav button:active, .tools button:active, .fl:active, .opt-btn:active, .o:active, .rh > button:active, .more button:active, .burger:active { opacity: .45; }
+  }
+  /* extensions can't be installed on phones and tablets */
+  @media (hover: none), (max-width: 820px) { #navExt { display: none; } }
+  #navApp { display: none; }
+  @media (hover: none), (max-width: 820px) { #navApp { display: flex; } }
+  @media (hover: none) {
+    .btn:hover { background: var(--ink); } .btn.alt:hover { background: none; }
+    nav button:not(.on):hover, .tools button:hover, .rh > button:hover, .more button:hover, .fl:hover, .o:not(.on):hover, .opt-btn:hover { color: var(--gray); }
+    .rh > button:hover, .more button:hover, .fl:hover, .o:not(.on):hover, .opt-btn:hover { color: var(--mid); }
+    .fcb:not([data-state="all"]):hover .b { fill: none; }
+    .fcb[data-state="all"]:hover .k { opacity: 1; }
+    .front.optsopen .opt-btn { color: var(--ink); }
+  }
+
+  /* phone + small tablet: translucent sticky header, bottom sheet, softer shapes */
+  @media (max-width: 820px) {
+    header.g { position: sticky; top: 0; z-index: 8; margin-left: calc(-1 * max(var(--pad), env(safe-area-inset-left))); margin-right: calc(-1 * max(var(--pad), env(safe-area-inset-right)));
+      padding: calc(8px + env(safe-area-inset-top, 0px)) max(var(--pad), env(safe-area-inset-right)) 8px max(var(--pad), env(safe-area-inset-left));
+      background: rgba(255,255,255,.86); -webkit-backdrop-filter: saturate(180%) blur(18px); backdrop-filter: saturate(180%) blur(18px); box-shadow: 0 1px 0 rgba(0,0,0,.07); }
+    header.open { background: var(--bg); }
+    .burger { width: 44px; height: 44px; margin-right: -12px; }
+    .burger span { left: 12px; right: 12px; } .burger span:nth-child(1) { top: 16px; } .burger span:nth-child(2) { top: 21px; } .burger span:nth-child(3) { top: 26px; }
+    .burger[aria-expanded="true"] span:nth-child(1), .burger[aria-expanded="true"] span:nth-child(3) { top: 21px; }
+    nav { margin-top: 8px; border-top: 1px solid #e6e6e6; }
+    nav button { min-height: 54px; display: flex; align-items: center; font-size: 22px; }
+    header.open nav { animation: dropin .22s ease-out; }
+    @keyframes dropin { from { opacity: 0; transform: translateY(-6px); } }
+    .hero { padding-top: 40px; } .about, .ext { margin-top: 40px; }
+    .crumbs { padding: 36px 0 24px; }
+    h1 { font-size: clamp(34px, 9vw, 52px); } h1 br { display: none; }
+    .pin .kind { left: 5px; bottom: 5px; }
+    .strip { gap: 5px; }
+    form { padding-bottom: 4px; }
+    #note { min-height: 24px; }
+    /* bottom bar becomes a sheet */
+    .front { border-top: 0; border-radius: 22px 22px 0 0; background: rgba(255,255,255,.92); -webkit-backdrop-filter: saturate(180%) blur(22px); backdrop-filter: saturate(180%) blur(22px);
+      box-shadow: 0 -1px 0 rgba(0,0,0,.08), 0 -12px 40px rgba(0,0,0,.10); }
+    .front::before { content: ""; display: block; width: 38px; height: 5px; border-radius: 3px; background: #d4d4d4; margin: 8px auto 0; }
+    .front-in { padding-top: 10px; }
+    .front.optsopen { max-height: 82vh; max-height: 82dvh; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; background: var(--bg); }
+    body:has(.front.optsopen) .scrim { opacity: 1; pointer-events: auto; }
+    .track { border-radius: 3px; } .track div { border-radius: 3px; }
+    .o { padding: 4px 0; }
+    .front .o { min-height: 34px; }
+  }
+  @media (max-width: 599px) {
+    .sum { display: none; } /* the Download button already says how many items */
+    .opt-btn, .fl { margin-bottom: 14px; }
+  }
+  /* tablet: everything on one line: Options, count, Select/Deselect all, Download */
+  @media (min-width: 600px) and (max-width: 820px) {
+    .front-in > .g { grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 0 24px; }
+    .opt-btn { grid-column: 1; grid-row: 1; align-self: center; }
+    .sum { grid-column: 2; grid-row: 1; justify-self: stretch; text-align: left; margin: 0; white-space: nowrap; }
+    .fl { grid-column: 3; grid-row: 1; justify-self: end; }
+    .front .btn { grid-column: 4; grid-row: 1; padding: 14px 32px; }
+    .dlmsg { grid-column: 1 / -1; grid-row: 2; margin-top: 10px; }
+    .prog { grid-column: 1 / -1; grid-row: 1; }
+  }
+  /* phone landscape: short screen, keep everything reachable */
+  @media (max-height: 480px) and (orientation: landscape) {
+    .hero { padding-top: 16px; } .crumbs { padding: 16px 0; }
+    .front::before { display: none; }
+    .front-in { padding-top: 8px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+    .front .btn { flex: 0 0 auto; min-height: 44px; padding: 10px 22px; }
+    .sum { flex: 1 1 0; } .dlmsg { flex: 1 1 100%; }
+    .front.optsopen { max-height: 92vh; max-height: 92dvh; }
+    main { padding-bottom: calc(130px + env(safe-area-inset-bottom, 0px)); }
+  }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
 </style>
 </head>
 <body>
@@ -244,6 +358,7 @@
     <nav class="c2" id="nav" aria-label="Pages">
       <button class="on" id="navDl" type="button">Download</button>
       <button id="navExt" type="button">Add extension</button>
+      <button id="navApp" type="button" hidden>Install as app</button>
       <button id="navAbout" type="button">Thank</button>
     </nav>
   </header>
@@ -256,14 +371,22 @@
     </div>
   </div>
 
+  <div class="g" id="appPanel" hidden>
+    <div class="c1"></div>
+    <div class="c2 ext">
+      <button class="btn" id="appInstall" type="button" hidden>Install Pinthia</button>
+      <section class="browser"><h3 id="appTitle">Install as app</h3><ul class="steps" id="appSteps"></ul></section>
+    </div>
+  </div>
+
   <div class="g"><div class="c1"></div><div class="c2 about thanks" id="about"><p>Pinthia turns a public Pinterest board, section or profile into one download, keeping your sections as folders. It is free, and made by one person. If it saved you some time, a Pepsi is more than enough.</p><a class="btn" id="pepsi" href="https://ko-fi.com/jureeruj" target="_blank" rel="noopener">Buy me a Pepsi</a></div></div>
 
   <div class="hero g">
     <div class="c1"></div>
     <div class="c2">
-      <h1>Paste a board link.<br>Get every pin, in folders.</h1>
+      <h1>Paste a board link. <br>Get every pin, in folders.</h1>
       <form id="form">
-        <input id="url" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="pinterest.com/…" aria-label="Pinterest link" autofocus>
+        <input id="url" type="text" inputmode="url" enterkeyhint="go" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="pinterest.com/…" aria-label="Pinterest link">
         <button id="go" type="submit"></button>
       </form>
       <div id="note" role="status" aria-live="polite"></div>
@@ -285,6 +408,7 @@
   </section>
 </main>
 
+<div class="scrim" id="scrim" aria-hidden="true"></div>
 <div class="front" id="front">
   <div class="front-in wrap">
     <div class="opts-wrap" id="opts"></div>
@@ -303,7 +427,7 @@
   </div>
 </div>
 
-<script src="engine.js?v=1794848214"></script>
-<script src="app.js?v=1794848214"></script>
+<script src="engine.js?v=1794908914"></script>
+<script src="app.js?v=1794908914"></script>
 </body>
 </html>

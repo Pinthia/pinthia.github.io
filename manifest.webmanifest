@@ -1,0 +1,15 @@
+{
+  "name": "Pinthia",
+  "short_name": "Pinthia",
+  "description": "Download a Pinterest board as a zip, with sections kept as folders.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "share_target": { "action": ".", "method": "GET", "params": { "title": "title", "text": "text", "url": "url" } },
+  "icons": [
+    { "src": "apple-touch-icon.png?v=2", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "og-image.png?v=2", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

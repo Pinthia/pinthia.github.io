@@ -22,13 +22,16 @@ $('back').innerHTML = ICON.left + 'All boards';
 /* ---------- nav ---------- */
 function showPanel(which) {
   document.body.classList.toggle('page-other', !!which); // Extension and About are their own pages
-  $('about').classList.toggle('on', which === 'about'); $('extPanel').hidden = which !== 'ext';
+  $('about').classList.toggle('on', which === 'about'); $('extPanel').hidden = which !== 'ext'; $('appPanel').hidden = which !== 'app';
+  $('navApp').classList.toggle('on', which === 'app');
   $('navAbout').classList.toggle('on', which === 'about'); $('navExt').classList.toggle('on', which === 'ext'); $('navDl').classList.toggle('on', !which);
 }
 const setMenu = (open) => { document.querySelector('header').classList.toggle('open', open); $('burger').setAttribute('aria-expanded', open); };
+if (matchMedia('(hover: hover) and (pointer: fine)').matches) $('url').focus();
 $('burger').onclick = () => setMenu(!document.querySelector('header').classList.contains('open'));
 $('navAbout').onclick = () => { showPanel('about'); setMenu(false); };
 $('navExt').onclick = () => { showPanel('ext'); setMenu(false); };
+$('navApp').onclick = () => { showPanel('app'); setMenu(false); };
 $('navDl').onclick = () => { showPanel(null); setMenu(false); };
 // already installed: the extension itself, or the website after the Pinthia extension marked this page
 const hideExt = () => { $('navExt').hidden = true; if (!$('extPanel').hidden) showPanel(''); };
@@ -50,6 +53,22 @@ $('extPanel').addEventListener('click', (e) => {
   const c = e.target.closest('[data-copy]'); if (!c) return;
   navigator.clipboard?.writeText(c.dataset.copy).then(() => { c.textContent = 'Copied'; setTimeout(() => (c.textContent = 'Copy'), 1500); }).catch(() => {});
 });
+
+/* ---------- install as app (phones and tablets) ---------- */
+{
+  const ua = navigator.userAgent, ios = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const arrow = '<svg class="ar sep" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
+  const steps = ios ? ['Open Pinthia in <b>Safari</b>.', 'Tap the <b>Share</b> button (the square with an arrow up).', 'Scroll down and tap <b>Add to Home Screen</b>, then <b>Add</b>.', 'Open Pinthia from your home screen. In the Pinterest app, tap Share on a board and <b>Copy link</b>, then open Pinthia and tap <b>Paste</b>.']
+    : ['Open the browser menu (<b>⋮</b>).', 'Tap <b>Install app</b> or <b>Add to Home screen</b>.', 'Open Pinthia from your home screen. In the Pinterest app, tap Share on a board and pick <b>Pinthia</b>.'];
+  $('appSteps').innerHTML = steps.map((t) => `<li>${t}</li>`).join('');
+  let deferred = null;
+  window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferred = e; $('appInstall').hidden = false; $('appSteps').parentElement.hidden = true; });
+  $('appInstall').onclick = async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice.catch(() => {}); deferred = null; $('appInstall').hidden = true; $('appSteps').parentElement.hidden = false; };
+  window.addEventListener('appinstalled', () => { $('navApp').hidden = true; showPanel(null); });
+  if (standalone || engine.kind === 'extension') $('navApp').hidden = true;
+  else $('navApp').hidden = false; // shown only on narrow or touch screens by CSS
+}
 
 /* ---------- download options (remembered) ---------- */
 let opt = { image: true, gif: true, video: true, structure: 'folders', figma: false, zip: false };
@@ -87,14 +106,38 @@ urlBox.addEventListener('blur', () => {
 
 /* ---------- loading a link ---------- */
 // Load stays dimmed until there is a link to load
-const syncGo = () => { $('go').disabled = !urlBox.value.trim(); };
+// With an empty field the button turns into Paste (reads the clipboard: Pinterest app > Share > Copy link, then Paste here)
+const canPaste = !!navigator.clipboard?.readText && matchMedia('(pointer: coarse)').matches;
+let busy = false;
+const syncGo = () => {
+  const has = !!urlBox.value.trim();
+  $('go').disabled = busy || (!has && !canPaste);
+  if (!busy) $('go').textContent = has || !canPaste ? 'Load' : 'Paste';
+};
 urlBox.addEventListener('input', syncGo); syncGo();
-$('form').addEventListener('submit', (e) => { e.preventDefault(); load($('url').value.trim()); });
+// pulls the Pinterest link out of whatever was shared or copied ("Check out this board https://pin.it/abc")
+const findLink = (t) => (String(t || '').match(/https?:\/\/(?:[\w-]+\.)*(?:pinterest\.[a-z.]+|pin\.it)\/[^\s"'<>]*/i) || [])[0] || '';
+$('form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  let v = urlBox.value.trim();
+  if (!v && canPaste) {
+    try { v = findLink(await navigator.clipboard.readText()); } catch { /* denied */ }
+    if (!v) return note('No Pinterest link on the clipboard. In the Pinterest app tap Share, then Copy link.', true);
+    urlBox.value = v; syncGo();
+  }
+  load(findLink(v) || v);
+});
+// Shared straight to the app (Android: Share > Pinthia), or opened with ?url=
+{
+  const q = new URLSearchParams(location.search);
+  const shared = findLink(q.get('url')) || findLink(q.get('text')) || findLink(q.get('title'));
+  if (shared) { urlBox.value = shared; history.replaceState(null, '', location.pathname); syncGo(); load(shared); }
+}
 
 async function load(url, fromProfile = false) {
   if (!url) return;
   if (!fromProfile) S.profile = null;
-  $('go').disabled = true; $('go').textContent = 'Loading…'; note('');
+  busy = true; $('go').disabled = true; $('go').textContent = 'Loading…'; note('');
   try {
     const info = await engine.inspect(url);
     S.url = url; S.info = info; note('');
@@ -104,7 +147,7 @@ async function load(url, fromProfile = false) {
     window.scrollTo(0, 0);
   } catch (err) {
     note(err.message === 'Failed to fetch' ? "Can't reach Pinterest or the server." : err.message, true);
-  } finally { $('go').textContent = 'Load'; syncGo(); }
+  } finally { busy = false; syncGo(); }
 }
 
 function scopeOf(key, count) { return (S.sc[key] ||= { key, count, items: [], next: undefined, loading: false }); }
@@ -314,7 +357,7 @@ function renderView(id) {
 const OPTS = [
   { title: 'File types', multi: true, choices: [['image', 'Images'], ['gif', 'GIFs'], ['video', 'Videos']] },
   { title: 'Zip layout', key: 'structure', choices: [['folders', 'Boardlike'], ['flat', '1 folder'], ['sub', 'Subfolders']] },
-  { title: 'Extras', multi: true, choices: [['figma', 'Figma file'], ['zip', 'Zip file']] },
+  { title: 'Extras', multi: true, choices: [['figma', 'Figma ready'], ['zip', 'Zip file']] },
 ];
 function renderOpts() {
   $('opts').innerHTML = `<div class="ogrid g">${OPTS.map((g, i) => `<div class="${i ? 'c2' : 'c1'}"><div class="chips" role="group" aria-label="${g.title}">${g.choices.map(([v, l]) => {
@@ -329,6 +372,9 @@ $('opts').addEventListener('click', (e) => {
   else { const types = ['image', 'gif', 'video']; if (types.includes(v) && opt[v] && types.filter((t) => opt[t]).length === 1) return; opt[v] = !opt[v]; }
   saveOpt(); renderOpts();
 });
+const closeOpts = () => { $('front').classList.remove('optsopen'); $('optBtn').setAttribute('aria-expanded', false); };
+$('scrim').onclick = closeOpts;
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeOpts(); setMenu(false); } });
 $('optBtn').onclick = () => { const o = $('front').classList.toggle('optsopen'); $('optBtn').setAttribute('aria-expanded', o); };
 
 /* ---------- bottom bar / download ---------- */
@@ -339,12 +385,19 @@ function totals() {
   const units = S.mode === 'profile' ? S.nodes.filter((n) => nodeScopes(n).some(included)).length : inc.length;
   return { units, pins: Math.max(0, pins) };
 }
+// Not enough room? Drop the word "selected" first, then the item count
+function fitSum() {
+  const el = $('sum'); el.classList.remove('short', 'shorter');
+  if (el.scrollWidth > el.clientWidth) el.classList.add('short');
+  if (el.scrollWidth > el.clientWidth) el.classList.add('shorter');
+}
+window.addEventListener('resize', fitSum);
 function renderFront() {
   if (S.downloading || !S.nodes.length) return;
   const { units, pins } = totals();
   const unit = S.mode === 'profile' ? 'board' : 'folder';
-  const label = units ? `${fmt(units)} ${unit}${units === 1 ? '' : 's'} selected` : S.picked.size ? 'Items picked' : 'Nothing selected';
-  $('sum').innerHTML = pins ? `${label}<em> · ${itemsWord(pins)}</em>` : label;
+  const label = units ? `${fmt(units)} ${unit}${units === 1 ? '' : 's'}<span class="selw"> selected</span>` : S.picked.size ? 'Items picked' : 'Nothing selected';
+  $('sum').innerHTML = pins ? `${label}<em> · ${itemsWord(pins)}</em>` : label; fitSum();
   setDl(pins ? `Download ${itemsWord(pins)}` : 'Select to download', !pins);
   const allChecked = allScopes().every(scopeFull);
   $('allOn').hidden = allChecked; $('allOff').hidden = !pins;
