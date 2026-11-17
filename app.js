@@ -29,6 +29,7 @@ function showPanel(which) {
 const setMenu = (open) => { document.querySelector('header').classList.toggle('open', open); $('burger').setAttribute('aria-expanded', open); };
 if (matchMedia('(hover: hover) and (pointer: fine)').matches) $('url').focus();
 $('burger').onclick = () => setMenu(!document.querySelector('header').classList.contains('open'));
+$('navIdea').onclick = () => { location.href = 'mailto:jureeruj@outlook.com?subject=Pinthia%20idea'; setMenu(false); };
 $('navAbout').onclick = () => { showPanel('about'); setMenu(false); };
 $('navExt').onclick = () => { showPanel('ext'); setMenu(false); };
 $('navApp').onclick = () => { showPanel('app'); setMenu(false); };
