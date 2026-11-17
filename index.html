@@ -87,7 +87,7 @@
   .about.on { display: block; }
 
   body.page-other .hero, body.page-other #cabinet, body.page-other #front, body.page-other #info, body.loaded #info { display: none !important; }
-  #info { margin-top: 56px; padding-bottom: 24px; }
+  #info { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; margin: 0; padding: 12px max(var(--pad), env(safe-area-inset-left)) calc(14px + env(safe-area-inset-bottom, 0px)); background: var(--bg); max-height: 70vh; overflow-y: auto; }
   #info summary { cursor: pointer; list-style: none; color: var(--gray); font-weight: 700; font-size: 13px; letter-spacing: -.01em; width: max-content; }
   #info summary::-webkit-details-marker { display: none; }
   #info summary:hover, #info[open] summary { color: var(--mid); }
@@ -480,8 +480,8 @@
   </div>
 </div>
 
-<script src="engine.js?v=1794912083"></script>
-<script src="app.js?v=1794912083"></script>
+<script src="engine.js?v=1794912137"></script>
+<script src="app.js?v=1794912137"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b272ce9928174f259fd5ad225997c514"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
